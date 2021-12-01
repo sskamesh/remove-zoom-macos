@@ -75,8 +75,6 @@ loggedInUser=$(stat -f "%Su" /dev/console)
 # prompt the user for their password if required
 printf "\n%sPlease Note:%s This script will prompt for your password if you are not already running as sudo.\n" "${BOLD}" "${RESET}"
 
-sudo -v
-
 ###################
 ### remove zoom ###
 ###################
@@ -87,7 +85,7 @@ sub_header "Checking to see if the Zoom process is running"
 
 if pgrep -i zoom &>/dev/null; then
 
-    sudo kill "$(pgrep -i zoom)"
+    kill "$(pgrep -i zoom)"
     terminated
     printf "Zoom process\n"
 
@@ -107,7 +105,7 @@ declare -a ZOOM_APPLICATION=(
 
 for ENTRY in "${ZOOM_APPLICATION[@]}"; do
     if [ -f "${ENTRY}" ] || [ -d "${ENTRY}" ]; then
-        sudo rm -rf "${ENTRY}"
+        rm -rf "${ENTRY}"
         deleted
         printf "%s\n" "${ENTRY}"
     else
@@ -120,8 +118,8 @@ sub_header "Removing the Zoom Audio Device"
 
 if [ -f "/System/Library/Extensions/ZoomAudioDevice.kext" ] || [ -d "/System/Library/Extensions/ZoomAudioDevice.kext" ]; then
 
-    sudo kextunload -b zoom.us.ZoomAudioDevice
-    sudo rm -rf "/System/Library/Extensions/ZoomAudioDevice.kext"
+    kextunload -b zoom.us.ZoomAudioDevice
+    rm -rf "/System/Library/Extensions/ZoomAudioDevice.kext"
     deleted
     printf "/System/Library/Extensions/ZoomAudioDevice.kext file\n"
 
@@ -138,7 +136,7 @@ declare -a ZOOM_AUDIO_DEVICE=(
 
 for ENTRY in "${ZOOM_AUDIO_DEVICE[@]}"; do
     if [ -f "${ENTRY}" ] || [ -d "${ENTRY}" ]; then
-        sudo rm -rf "${ENTRY}"
+        rm -rf "${ENTRY}"
         deleted
         printf "%s\n" "${ENTRY}"
     else
@@ -156,7 +154,7 @@ declare -a ZOOM_PLUGIN=(
 
 for ENTRY in "${ZOOM_PLUGIN[@]}"; do
     if [ -f "${ENTRY}" ] || [ -d "${ENTRY}" ]; then
-        sudo rm -rf "${ENTRY}"
+        rm -rf "${ENTRY}"
         deleted
         printf "%s\n" "${ENTRY}"
     else
@@ -167,9 +165,9 @@ done
 
 sub_header "Removing Zoom defaults preferences"
 
-if ! sudo defaults read us.zoom.xos 2>&1 | grep -Eq "Domain us.zoom.xos does not exist"; then
+if ! defaults read us.zoom.xos 2>&1 | grep -Eq "Domain us.zoom.xos does not exist"; then
 
-    sudo defaults delete us.zoom.xos
+    defaults delete us.zoom.xos
     deleted
     printf "sudo defaults read us.zoom.xos\n"
 
@@ -184,7 +182,7 @@ sub_header "Removing pkgutil history"
 
 if pkgutil --pkgs | grep -Eq "us.zoom.pkg.videmeeting"; then
 
-    sudo pkgutil --forget us.zoom.pkg.videmeeting &>/dev/null
+    pkgutil --forget us.zoom.pkg.videmeeting &>/dev/null
     deleted
     printf "pkgutil history for us.zoom.pkg.videmeeting\n"
 
@@ -228,7 +226,7 @@ declare -a ZOOM_CRUFT=(
 
 for ENTRY in "${ZOOM_CRUFT[@]}"; do
     if [ -f "${ENTRY}" ] || [ -d "${ENTRY}" ]; then
-        sudo rm -rf "${ENTRY}"
+        rm -rf "${ENTRY}"
         deleted
         printf "%s\n" "${ENTRY}"
     else
@@ -247,7 +245,7 @@ declare -a ZOOM_CLIENT_RECEIPTS=(
 
 for ENTRY in "${ZOOM_CLIENT_RECEIPTS[@]}"; do
     if [ -f "${ENTRY}" ] || [ -d "${ENTRY}" ]; then
-        sudo rm -rf "${ENTRY}"
+        rm -rf "${ENTRY}"
         deleted
         printf "%s\n" "${ENTRY}"
     else
@@ -267,7 +265,7 @@ sub_header "Killing Zoom Outlook Plugin Launcher if running"
 
 if pgrep -i PluginLauncher &>/dev/null; then
 
-    sudo kill "$(pgrep -i PluginLauncher)"
+    kill "$(pgrep -i PluginLauncher)"
     terminated
     printf "Zoom PluginLauncher process\n"
 
@@ -275,21 +273,6 @@ else
 
     not_found
     printf "Zoom PluginLauncher process\n"
-
-fi
-
-sub_header "Unloading Zoom Outlook Plugin LaunchAgent"
-
-if pgrep -i zOutlookPluginAgent &>/dev/null; then
-
-    sudo su - "$loggedInUser" -c "/bin/launchctl unload -wF /Library/LaunchAgents/us.zoom.pluginagent.plist" &>/dev/null
-    terminated
-    printf "Zoom OutlookPlugin Agent process\n"
-
-else
-
-    not_found
-    printf "Zoom OutlookPlugin Agent process\n"
 
 fi
 
@@ -302,7 +285,7 @@ declare -a ZOOM_OUTLOOK_APPLICATION=(
 
 for ENTRY in "${ZOOM_OUTLOOK_APPLICATION[@]}"; do
     if [ -f "${ENTRY}" ] || [ -d "${ENTRY}" ]; then
-        sudo rm -rf "${ENTRY}"
+        rm -rf "${ENTRY}"
         deleted
         printf "%s\n" "${ENTRY}"
     else
@@ -323,7 +306,7 @@ declare -a ZOOM_OUTLOOK_CRUFT=(
 
 for ENTRY in "${ZOOM_OUTLOOK_CRUFT[@]}"; do
     if [ -f "${ENTRY}" ] || [ -d "${ENTRY}" ]; then
-        sudo rm -rf "${ENTRY}"
+        rm -rf "${ENTRY}"
         deleted
         printf "%s\n" "${ENTRY}"
     else
@@ -336,7 +319,7 @@ sub_header "Removing pkgutil history for Zoom Outlook Plugin"
 
 if pkgutil --pkgs | grep -Eq "ZoomMacOutlookPlugin.pkg"; then
 
-    sudo pkgutil --forget ZoomMacOutlookPlugin.pkg &>/dev/null
+    pkgutil --forget ZoomMacOutlookPlugin.pkg &>/dev/null
     deleted
     printf "pkgutil history for ZoomMacOutlookPlugin.pkg\n"
 
@@ -356,7 +339,7 @@ declare -a ZOOM_OUTLOOK_RECEIPTS=(
 
 for ENTRY in "${ZOOM_OUTLOOK_RECEIPTS[@]}"; do
     if [ -f "${ENTRY}" ] || [ -d "${ENTRY}" ]; then
-        sudo rm -rf "${ENTRY}"
+        rm -rf "${ENTRY}"
         deleted
         printf "%s\n" "${ENTRY}"
     else
